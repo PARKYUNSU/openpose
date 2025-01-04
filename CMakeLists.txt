@@ -975,23 +975,42 @@ if (Caffe_FOUND)
 endif (Caffe_FOUND)
 
 
-### DOWNLOAD MODELS
-# Download the models if flag is set
-message(STATUS "Download the models.")
+
+CMakeLists.txt 파일에서 특정 모델(body_25)만 활성화하려면, 모델 다운로드 옵션을 수정하여 다른 모델 관련 구문을 비활성화하거나 제거해야 합니다. 주어진 파일은 매우 길기 때문에 주요 수정 지점을 중심으로 설명하겠습니다.
+
+수정이 필요한 부분
+모델 다운로드 옵션 수정
+
+body_25 모델만 활성화(ON), 나머지는 비활성화(OFF).
+download_model 함수 호출에서 body_25 모델 외의 다른 모델 다운로드를 주석 처리 또는 삭제.
+모델 해시값 수정
+
+body_25 모델의 올바른 해시값을 확인하여 수정.
+에러 처리
+
+CMake에서 특정 구문 에러가 발생할 경우, 해당 줄의 내용이 의도에 맞게 작성되었는지 확인.
+수정된 CMakeLists.txt
+다음은 수정된 예제입니다:
+
+### 모델 다운로드
+message(STATUS "Downloading the models.")
 
 # URL to the models
 set(OPENPOSE_URL "${DOWNLOAD_SERVER}models/")
 
-download_model("BODY_25" ${DOWNLOAD_BODY_25_MODEL} pose/body_25/pose_iter_584000.caffemodel
+# body_25 모델만 활성화
+download_model("BODY_25" ON pose/body_25/pose_iter_584000.caffemodel
   78287B57CF85FA89C03F1393D368E5B7) # Body (BODY_25)
-download_model("body (COCO)" ${DOWNLOAD_BODY_COCO_MODEL} pose/coco/pose_iter_440000.caffemodel
-  5156d31f670511fce9b4e28b403f2939) # Body (COCO)
-download_model("body (MPI)" ${DOWNLOAD_BODY_MPI_MODEL} pose/mpi/pose_iter_160000.caffemodel
-  2ca0990c7562bd7ae03f3f54afa96e00) # Body (MPI)
-download_model("face" ${DOWNLOAD_FACE_MODEL} face/pose_iter_116000.caffemodel
-  e747180d728fa4e4418c465828384333) # Face
-download_model("hand" ${DOWNLOAD_HAND_MODEL} hand/pose_iter_102000.caffemodel
-  a82cfc3fea7c62f159e11bd3674c1531) # Hand
+
+# 아래 다른 모델들은 비활성화
+# download_model("body (COCO)" OFF pose/coco/pose_iter_440000.caffemodel
+#   5156d31f670511fce9b4e28b403f2939) # Body (COCO)
+# download_model("body (MPI)" OFF pose/mpi/pose_iter_160000.caffemodel
+#   2ca0990c7562bd7ae03f3f54afa96e00) # Body (MPI)
+# download_model("face" OFF face/pose_iter_116000.caffemodel
+#   e747180d728fa4e4418c465828384333) # Face
+# download_model("hand" OFF hand/pose_iter_102000.caffemodel
+#   a82cfc3fea7c62f159e11bd3674c1531) # Hand
 
 message(STATUS "Models Downloaded.")
 
